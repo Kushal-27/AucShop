@@ -50,5 +50,5 @@ class User(AbstractBaseUser,PermissionsMixin):
     class Meta:
         verbose_name = 'User'
         verbose_name_plural = 'Users'
-    groups = models.ManyToManyField(Group, related_name='user_groups')
+    groups = models.ManyToManyField(Group, related_name='user_groups', null=True)
     user_permissions = models.ManyToManyField(Permission, related_name='user_permissions')

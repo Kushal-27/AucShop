@@ -29,8 +29,9 @@ def signup(request):
         full_name = request.POST['name']
         name_list = full_name.split()
         length = len(name_list)
-        first_name = name_list[0]
-        last_name = name_list[length-1]
+        first_name = str(name_list[0])
+        last_name = str(name_list[length-1])
+        print(last_name)
         phone_number = request.POST['number']
         email = request.POST['email']
         password1 = request.POST['password1']
@@ -53,19 +54,29 @@ def signup(request):
 
 @login_required(login_url='/login')
 def home(request):
-    return render(request, 'homee.html')
+    return render(request, 'home.html')
 
 def about(request):
-    return render(request, 'aboutt.html')
+    return render(request, 'about.html')
 
 def cart(request):
-    return render(request,'cartt.html')
+    return render(request,'cart.html')
 
 def auction(request):
-    return render(request, 'auctionn.html')
+    return render(request, 'auction.html')
 
 def account(request):
-    return render(request, 'accountt.html')
+    return render(request, 'account.html')
 
 def products(request):
+    return render(request, 'product.html')
+
+#index page views
+def info(request):
+    return render(request, 'aboutt.html')
+
+def product(request):
     return render(request, 'productt.html')
+
+def auctions(request):
+    return render(request, 'auctionn.html')
