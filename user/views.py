@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from vendor.models import Product
 from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 User = get_user_model()
+from django.db.models.functions import Random
 # Create your views here.
 def index(request):
-    return render(request, 'index.html')
+    product = Product.objects.order_by(Random())[:6]
+    return render(request, 'index.html', {'products':product})
 
 def login(request):
     if request.method=='POST':
@@ -22,6 +25,7 @@ def login(request):
 
 
     else:
+        
         return render(request,'login.html')
 
 def signup(request):
@@ -54,7 +58,9 @@ def signup(request):
 
 @login_required(login_url='/login')
 def home(request):
-    return render(request, 'home.html')
+    product = Product.objects.order_by(Random())[:6]
+    return render(request, 'home.html', {'products':product})
+    
 
 def about(request):
     return render(request, 'about.html')
@@ -80,3 +86,8 @@ def product(request):
 
 def auctions(request):
     return render(request, 'auctionn.html')
+
+def product_detail(request, product_id):
+    obj = Product.objects.filter(id=product_id)
+    return render(request, 'productpage.html', {'details':obj})
+    

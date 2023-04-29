@@ -4,7 +4,10 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from user.models import User
 # Create your models here.
 
-
+class Vendor(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='vendor')
+    shopname = models.CharField(max_length=255)
+    pan_number = models.IntegerField(default=False)
 
 
 class Product(models.Model):
@@ -12,7 +15,7 @@ class Product(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     product_picture = models.ImageField(upload_to='Product_pictures/', null=True, blank=True)
-    vendor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='products')
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name='products')
     category = models.CharField(max_length=100)
     quantity=  models.IntegerField(default=0)
     offers = models.BooleanField(default=False)
@@ -30,7 +33,7 @@ class Rating(models.Model):
 class Auction(models.Model):
     item = models.CharField(max_length=255)
     description = models.TextField()
-    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='auctions_selling')
+    seller = models.ForeignKey(Vendor, on_delete=models.CASCADE, related_name='auctions_selling')
     product_picture = models.ImageField(upload_to='Product_pictures/', null=True, blank=True)
     starting_bid = models.DecimalField(max_digits=10, decimal_places=2)
     reserve_price = models.DecimalField(max_digits=10, decimal_places=2)
