@@ -30,6 +30,8 @@
   <link href="{% static 'css/style.css' %}" rel="stylesheet" />
   <!-- responsive style -->
   <link href="{% static 'css/responsive.css' %}" rel="stylesheet" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
 
 </head>
 
@@ -70,7 +72,7 @@
               </a>
               <a href="cart" class="cart-link">
                 <i class="fa fa-shopping-cart {% block cartactive %} {% endblock %}" aria-hidden="true"></i>
-                <span>
+                <span class>
                   Cart
                 </span>
               </a>
@@ -233,15 +235,26 @@
     </div>
   </footer>
   <!-- footer section -->
-
+  
   <!-- jQery -->
   <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
   <!-- bootstrap js -->
   <script src="{% static 'js/bootstrap.js' %}"></script>
   <!-- custom js -->
   <script src="{% static 'js/custom.js' %}"></script>
-
-
+  <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+  <script>
+    {% for flashmsg in messages %}
+        {% if flashmsg.tags == 'success' %}
+            alertify.set('notifier', 'position', 'bottom-right');
+            alertify.success('{{ flashmsg }}');
+        {% elif flashmsg.tags == 'error' %}
+            alertify.set('notifier', 'position', 'bottom-right');
+            alertify.error('{{ flashmsg }}');
+        {% endif %}
+    {% endfor %}
+  </script>
+  
 </body>
 
 </html>

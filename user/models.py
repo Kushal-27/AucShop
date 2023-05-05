@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin,BaseUserManager, Group, Permission
+
+
 # Create your models here.
 #user table
 class CustomUserManager(BaseUserManager):
@@ -52,3 +54,5 @@ class User(AbstractBaseUser,PermissionsMixin):
         verbose_name_plural = 'Users'
     groups = models.ManyToManyField(Group, related_name='user_groups')
     user_permissions = models.ManyToManyField(Permission, related_name='user_permissions')
+
+

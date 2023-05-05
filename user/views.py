@@ -4,8 +4,11 @@ from vendor.models import Product
 from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
+from django.http import HttpResponse
 User = get_user_model()
 from django.db.models.functions import Random
+from vendor.models import Cart
+from django.http import JsonResponse
 # Create your views here.
 def index(request):
     product = Product.objects.order_by(Random())[:6]
@@ -18,9 +21,10 @@ def login(request):
         user = auth.authenticate(username = email, password=password)
         if user is not None:
             auth.login(request,user)
+            messages.success(request, 'Logged in Successfully')
             return redirect('home')
         else:
-            messages.info(request,'Invalid Credentials')
+            messages.error(request,'Invalid Credentials')
             return redirect('login')
 
 
@@ -42,14 +46,14 @@ def signup(request):
         password2 = request.POST['password2']
         if password1 == password2:
             if User.objects.filter(email=email).exists():
-                messages.info(request,'Email already in use')
+                messages.error(request,'Email already in use')
                 return redirect('signup')
             else:
                 user = User.objects.create_user(first_name=first_name,last_name= last_name, phone_number= phone_number, email=email,password=password1)
                 user.save()
                 messages.success(request,'Account created successfully! Please Login')
         else:
-            messages.info(request,'Password not matching')
+            messages.error(request,'Password not matching')
             return redirect('signup')
 
         return redirect('login')
@@ -91,3 +95,36 @@ def product_detail(request, product_id):
     obj = Product.objects.filter(id=product_id)
     return render(request, 'productpage.html', {'details':obj})
     
+def addCart(request):
+    
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            product_id = request.POST['product_id']
+            print(product_id)
+            quantity = 1
+            user = request.user.id
+            product_check = Product.objects.get(id=product_id)
+            if(product_check):
+                if product_check.quantity >= quantity:
+                    if Cart.objects.filter(product_id=product_id).exists():
+                        
+                        cart_item = Cart.objects.get(product_id=product_id)
+                        if cart_item.quantity < product_check.quantity:
+                            cart_item.quantity = cart_item.quantity+1
+                            cart_item.save()
+                            
+                            return JsonResponse({'status':'Product Added Successfully'})
+                        else:
+                            return JsonResponse({'status':'Not enough product quantity'})
+                    else:
+                        cart_item = Cart.objects.create(user_id=user, product_id=product_id,  quantity=quantity)
+                        return JsonResponse({'status':'Product Added Successfully'})
+                else:
+                    return JsonResponse({'status':'Product out of stock'})
+            else:
+                return JsonResponse({'status':'No Such Product'})
+            
+        else:
+            return JsonResponse({'status':'Login to Continue'})
+    else:
+        return redirect('/')
