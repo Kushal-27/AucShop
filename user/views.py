@@ -70,7 +70,18 @@ def about(request):
     return render(request, 'about.html')
 
 def cart(request):
-    return render(request,'cart.html')
+    user = request.user.id
+    products=[]
+    total_cost= 0
+    cart = Cart.objects.filter(user_id=user)
+    for items in cart:
+        product = Product.objects.get(id = items.product_id)
+        product.quantity = Cart.objects.get(product_id=product.id).quantity
+        product.total= product.price*product.quantity
+        products.append(product)
+        total_cost = total_cost+product.total
+    context = {'products':products, 'total_cost': total_cost}
+    return render(request,'cart.html', context)
 
 def auction(request):
     return render(request, 'auction.html')
