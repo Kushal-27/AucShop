@@ -1,6 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from vendor.models import Product
+from vendor.models import Product, Auction, Bid
 from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
@@ -9,6 +9,9 @@ User = get_user_model()
 from django.db.models.functions import Random
 from vendor.models import Cart
 from django.http import JsonResponse
+from django.utils import timezone
+from datetime import datetime
+import pytz
 # Create your views here.
 def index(request):
     product = Product.objects.order_by(Random())[:6]
@@ -65,7 +68,8 @@ def home(request):
     product = Product.objects.order_by(Random())[:6]
     return render(request, 'home.html', {'products':product})
     
-
+def homee(request):
+    return redirect(home)
 def about(request):
     return render(request, 'about.html')
 
@@ -84,20 +88,23 @@ def cart(request):
     return render(request,'cart.html', context)
 
 def auction(request):
-    return render(request, 'auction.html')
+    auction = Auction.objects.all()
+    return render(request, 'auction.html', {'products':auction})
 
 def account(request):
     return render(request, 'account.html')
 
 def products(request):
-    return render(request, 'product.html')
+    product = Product.objects.order_by(Random())[:9]
+    return render(request, 'product.html', {'products':product})
 
 #index page views
 def info(request):
-    return render(request, 'aboutt.html')
+    return render(request, 'about.html')
 
 def product(request):
-    return render(request, 'productt.html')
+    product = Product.objects.order_by(Random())[:6]
+    return render(request, 'product.html', {'products':product})
 
 def auctions(request):
     return render(request, 'auctionn.html')
@@ -106,6 +113,34 @@ def product_detail(request, product_id):
     obj = Product.objects.filter(id=product_id)
     return render(request, 'productpage.html', {'details':obj})
     
+def auction_detail(request, product_id):
+    obj = Auction.objects.get(id=product_id)
+    
+    tz = pytz.timezone('Asia/Kathmandu')
+    obj.end_time = obj.end_time.astimezone(tz)
+    
+    context = {'auction':obj}
+    return render(request, 'auctiondetail.html', context)
+
+def place_bid(request, auction_id):
+    auction = get_object_or_404(Auction, id=auction_id)
+
+    if request.method == 'POST':
+        bid_amount = request.POST.get('bid_amount')
+        current_time = timezone.now()
+
+        if bid_amount is not None and bid_amount != '' and float(bid_amount) > auction.current_bid:
+            bid = Bid.objects.create(auction=auction, user=request.user, amount=float(bid_amount), timestamp=current_time)
+            auction.current_bid = bid.amount
+            auction.save()
+            messages.success(request, 'Your bid has been placed.')
+            return redirect('auction_detail', product_id=auction.id)
+        else:
+            messages.error(request, 'Your bid must be higher than the current bid.')
+
+    
+    return render(request, 'auctiondetail.html', {'auctions':auction})
+
 def addCart(request):
     
     if request.method == 'POST':
@@ -139,3 +174,5 @@ def addCart(request):
             return JsonResponse({'status':'Login to Continue'})
     else:
         return redirect('/')
+    
+
