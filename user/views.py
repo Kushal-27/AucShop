@@ -7,15 +7,16 @@ from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 User = get_user_model()
 from django.db.models.functions import Random
-from vendor.models import Cart
+from vendor.models import Cart, Order, Vendor
 from django.http import JsonResponse
 from django.utils import timezone
 from datetime import datetime
 import pytz
+from django.db.models import Max
 # Create your views here.
 def index(request):
     product = Product.objects.order_by(Random())[:6]
-    return render(request, 'index.html', {'products':product})
+    return render(request, 'checkout.html', {'products':product})
 
 def login(request):
     if request.method=='POST':
@@ -118,13 +119,18 @@ def auction_detail(request, product_id):
     
     tz = pytz.timezone('Asia/Kathmandu')
     obj.end_time = obj.end_time.astimezone(tz)
-    
-    context = {'auction':obj}
+    highest_bid = Bid.objects.filter(auction_id=obj.id).order_by('-amount').first()
+    if highest_bid:
+        highest_bid_timestamp = highest_bid.timestamp
+    context = {'auction':obj, 'lastbid':highest_bid_timestamp}
     return render(request, 'auctiondetail.html', context)
 
 def place_bid(request, auction_id):
     auction = get_object_or_404(Auction, id=auction_id)
-
+    highest_bid = Bid.objects.filter(auction_id=auction_id).order_by('-amount').first()
+    if highest_bid:
+        highest_bid_timestamp = highest_bid.timestamp
+    
     if request.method == 'POST':
         bid_amount = request.POST.get('bid_amount')
         current_time = timezone.now()
@@ -134,12 +140,13 @@ def place_bid(request, auction_id):
             auction.current_bid = bid.amount
             auction.save()
             messages.success(request, 'Your bid has been placed.')
+            
             return redirect('auction_detail', product_id=auction.id)
         else:
             messages.error(request, 'Your bid must be higher than the current bid.')
 
-    
-    return render(request, 'auctiondetail.html', {'auctions':auction})
+    context = {'auctions':auction,'lastbid':highest_bid_timestamp}
+    return render(request, 'auctiondetail.html', context)
 
 def addCart(request):
     
@@ -176,3 +183,30 @@ def addCart(request):
         return redirect('/')
     
 
+def checkout(request):
+    items = []
+    total = 0
+    cart = Cart.objects.filter(user_id=request.user.id)
+    for item in cart:
+        product = Product.objects.get(id=item.product_id)
+        product.quantity = item.quantity
+        total = product.price*item.quantity + total
+        items.append(product)
+    context = {'cart':items,'user':request.user,'total':total}
+
+    return render(request,'checkout.html',context)
+
+def placeorder(request):
+    if request.method == 'POST':
+        address = request.POST.get('address')
+        cart = Cart.objects.filter(user_id=request.user.id)
+        for item in cart:
+            product = Product.objects.get(id=item.product_id)
+            product.quantity = product.quantity-item.quantity
+            order = Order.objects.create(quantity=item.quantity,order_status="PROCESSING",customer_id=item.user_id,product_id= item.product_id,vendor_id=product.vendor_id,address=address)
+            order.save()
+            product.save()
+        cart.delete()
+        
+        messages.success(request,"Order Placed Successfully")
+        return redirect('home')

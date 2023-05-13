@@ -1,115 +1,100 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Checkout Page</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-</head>
-<body>
+{% extends "base.html" %}
+{% load static %}
+{% block body %}
 
-<div class="container mt-5">
-  <h1 class="mb-5">Checkout</h1>
+<div class="container">
+  <div class="py-5 text-center">
+    
+    <h2>Checkout</h2>
+  </div>
+
   <div class="row">
-    <div class="col-md-6 mb-4">
-      <h4>Billing Information</h4>
-      <form>
-        <div class="form-group">
-          <label for="name">Name</label>
-          <input type="text" class="form-control" id="name" placeholder="Enter name">
+    <div class="col-md-4 order-md-2 mb-4">
+      <h4 class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-muted">Your Items</span>
+        
+      </h4>
+      <ul class="list-group mb-3">
+        {% for item in cart%}
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            <h6 class="my-0">{{item.name}}</h6>
+            <small class="text-muted">Quantity:{{item.quantity}}</small>
+          </div>
+          <span class="text-muted">Rs.{{item.price}}</span>
+        </li>
+        {%endfor%}
+        
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Total</span>
+          <strong>Rs.{{total}}</strong>
+        </li>
+      </ul>
+
+      
+    </div>
+    <div class="col-md-8 order-md-1">
+      <h4 class="mb-3">Billing address</h4>
+     
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="firstName">First Name</label>
+            <input type="text" class="form-control" id="firstName" style="width:100%;" readonly placeholder="{{user.first_name}}" value="" required>
+            <div class="invalid-feedback">
+              Valid first name is required.
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="lastName">Last name</label>
+            <input type="text" class="form-control" id="lastName" style="width:100%;" readonly placeholder="{{user.last_name}}" value="" required>
+            <div class="invalid-feedback">
+              Valid last name is required.
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" class="form-control" id="email" placeholder="Enter email">
+
+        
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="email">Email <span class="text-muted"></span></label>
+          <input type="email" class="form-control" id="email" style="width:100%;" readonly placeholder="{{user.email}}">
+          <div class="invalid-feedback">
+            Please enter a valid email address for shipping updates.
+          </div>
         </div>
-        <div class="form-group">
-          <label for="address">Address</label>
-          <input type="text" class="form-control" id="address" placeholder="Enter address">
+        <div class="col-md-6 mb-3">
+          <label for="number">Phone Number</label> <span class="text-muted"></span></label>
+          <input type="number" class="form-control" id="number" style="width:100%; " readonly placeholder="{{user.phone_number}}">
+          <div class="invalid-feedback">
+            Please enter a valid number
+          </div>
         </div>
-        <div class="form-group">
-          <label for="city">City</label>
-          <input type="text" class="form-control" id="city" placeholder="Enter city">
+      </div>
+      <form action="placeorder" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="address">Shipping Address</label>
+          <input type="text" name = "address" class="form-control" id="address" style="width:48%;" placeholder="{{user.address}}" required>
+          <div class="invalid-feedback">
+            Please enter your shipping address.
+          </div>
         </div>
-        <div class="form-group">
-          <label for="state">State</label>
-          <input type="text" class="form-control" id="state" placeholder="Enter state">
-        </div>
-        <div class="form-group">
-          <label for="zip">Zip Code</label>
-          <input type="text" class="form-control" id="zip" placeholder="Enter zip code">
-        </div>
+
+        
+
+        
+        
+        
+        <hr class="mb-4">
+
+        <h4 class="mb-3">Payment</h4>
+
+        
+        <hr class="mb-4">
+        <button class="btn btn-primary btn-lg btn-block mb-3" type="submit">Pay to Place Order</button>
       </form>
     </div>
-    <div class="col-md-6 mb-4">
-      <h4>Payment Information</h4>
-      <form>
-        <div class="form-group">
-          <label for="cardname">Name on Card</label>
-          <input type="text" class="form-control" id="cardname" placeholder="Enter name on card">
-        </div>
-        <div class="form-group">
-          <label for="cardnumber">Card Number</label>
-          <input type="text" class="form-control" id="cardnumber" placeholder="Enter card number">
-        </div>
-        <div class="form-group">
-          <label for="expmonth">Expiration Month</label>
-          <input type="text" class="form-control" id="expmonth" placeholder="Enter expiration month">
-        </div>
-        <div class="form-group">
-          <label for="expyear">Expiration Year</label>
-          <input type="text" class="form-control" id="expyear" placeholder="Enter expiration year">
-        </div>
-        <div class="form-group">
-          <label for="cvv">CVV</label>
-          <input type="text" class="form-control" id="cvv" placeholder="Enter CVV">
-        </div>
-      </form>
-    </div>
-  </div
-  <div class="row">
-    <div class="col-md-12">
-      <h4>Order Summary</h4>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Product</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Product 1</td>
-            <td>$100</td>
-            <td>2</td>
-            <td>$200</td>
-          </tr>
-          <tr>
-            <td>Product 2</td>
-            <td>$50</td>
-            <td>1</td>
-            <td>$50</td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colspan="3">Total</td>
-            <td>$250</td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <button class="btn btn-primary">Place Order</button>
-    </div>
-  </div>
-</div>
 
-</body>
-</html>
+  </div>
+{%endblock%}

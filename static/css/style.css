@@ -799,3 +799,6 @@ a:focus {
   color: inherit;
 }
 
+input.form-control {
+  width: 150px; 
+}

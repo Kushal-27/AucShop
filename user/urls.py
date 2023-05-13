@@ -16,7 +16,8 @@ urlpatterns = [
     path('place_bid/<int:auction_id>', views.place_bid, name = 'place_bid'),
     path('add-to-cart', views.addCart, name ='add-to-cart'),
     path('product_detail/home', views.homee, name= 'homee'),
-    
+    path('checkout', views.checkout, name ='checkout'),
+    path('placeorder', views.placeorder, name='placeorder'),
     #index page template urls
     path('info', views.info, name = 'aboutt'),
     path('auctions', views.auctions, name = 'auctionn'),

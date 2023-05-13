@@ -12,6 +12,7 @@
         <h3 class="mt-3 mb-4">Starting Bid: Rs.{{ auction.starting_bid }}</h3>
         {% if auction.current_bid > auction.starting_bid %}
         <h3 class="mt-3 mb-4">Current Bid: Rs.{{ auction.current_bid }}</h3>
+        <h3 class="mt-3 mb-4">Placed on: {{ lastbid }}</h3>
         {% endif %}
         {% if auction.status == 'open' %}
         

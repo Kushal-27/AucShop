@@ -7,11 +7,11 @@
 
 // getYear();
 
-// }
 $(document).ready(function () {
   $(".add_cart_btn").click(function (e) {
     e.preventDefault();
-    var product_id = $(this).closest('.product_data').find('.prod_id').val();
+    var product_id = this.dataset.product[0];
+    console.log(product_id)
     var token = $("input[name=csrfmiddlewaretoken]").val();
     $.ajax({
       method: "POST",
@@ -26,3 +26,5 @@ $(document).ready(function () {
     });
   });
 });
+
+

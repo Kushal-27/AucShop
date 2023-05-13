@@ -65,3 +65,40 @@ class Bid(models.Model):
 
     def __str__(self):
         return f"{self.user.username} bid {self.amount} on {self.auction.item}"
+    
+class Offer(models.Model):
+    sender = models.ForeignKey(User, related_name='sent_offers', on_delete=models.CASCADE)
+    vendor = models.ForeignKey(Vendor, related_name='received_offers', on_delete=models.CASCADE)
+    message = models.TextField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    
+    # Status of the offer, can be 'PENDING', 'ACCEPTED', or 'DECLINED'
+    STATUS_CHOICES = (
+        ('PENDING', 'Pending'),
+        ('ACCEPTED', 'Accepted'),
+        ('DECLINED', 'Declined'),
+    )
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
+
+
+class Order(models.Model):
+    ORDER_STATUS_CHOICES = (
+        ('PENDING', 'Pending'),
+        ('PROCESSING', 'Processing'),
+        ('SHIPPED', 'Shipped'),
+        ('DELIVERED', 'Delivered'),
+        ('CANCELLED', 'Cancelled'),
+    )
+    address = models.CharField(max_length=200)
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
+    customer = models.ForeignKey(User, related_name='orders', on_delete=models.CASCADE)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+    order_status = models.CharField(max_length=20, choices=ORDER_STATUS_CHOICES, default='PENDING')
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+
+    def __str__(self):
+        return f'{self.vendor} - {self.product} - {self.customer}'
