@@ -14,10 +14,15 @@ urlpatterns = [
     path('product_detail/<int:product_id>', views.product_detail, name = 'product_detail'),
     path('auction_detail/<int:product_id>', views.auction_detail, name = 'auction_detail'),
     path('place_bid/<int:auction_id>', views.place_bid, name = 'place_bid'),
+    path('auction_detail/products', views.products, name='products'),
     path('add-to-cart', views.addCart, name ='add-to-cart'),
     path('product_detail/home', views.homee, name= 'homee'),
     path('checkout', views.checkout, name ='checkout'),
     path('placeorder', views.placeorder, name='placeorder'),
+    path('product_detail/checkout',views.checkout, name = 'checkout'),
+    path('product_detail/makeoffer', views.makeoffer, name='makeoffer'),
+
+
     #index page template urls
     path('info', views.info, name = 'aboutt'),
     path('auctions', views.auctions, name = 'auctionn'),

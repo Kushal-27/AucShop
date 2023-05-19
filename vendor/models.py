@@ -68,7 +68,7 @@ class Bid(models.Model):
     
 class Offer(models.Model):
     sender = models.ForeignKey(User, related_name='sent_offers', on_delete=models.CASCADE)
-    vendor = models.ForeignKey(Vendor, related_name='received_offers', on_delete=models.CASCADE)
+    product_id = models.ForeignKey(Product, related_name='received_offers', on_delete=models.CASCADE)
     message = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -79,6 +79,7 @@ class Offer(models.Model):
         ('PENDING', 'Pending'),
         ('ACCEPTED', 'Accepted'),
         ('DECLINED', 'Declined'),
+        ('PAID', 'Paid'),
     )
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
 

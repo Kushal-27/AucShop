@@ -7,16 +7,17 @@ from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 User = get_user_model()
 from django.db.models.functions import Random
-from vendor.models import Cart, Order, Vendor
+from vendor.models import Cart, Order, Vendor, Offer
 from django.http import JsonResponse
 from django.utils import timezone
 from datetime import datetime
+from django.urls import reverse
 import pytz
 from django.db.models import Max
 # Create your views here.
 def index(request):
     product = Product.objects.order_by(Random())[:6]
-    return render(request, 'checkout.html', {'products':product})
+    return render(request, 'index.html', {'products':product})
 
 def login(request):
     if request.method=='POST':
@@ -184,17 +185,33 @@ def addCart(request):
     
 
 def checkout(request):
-    items = []
-    total = 0
-    cart = Cart.objects.filter(user_id=request.user.id)
-    for item in cart:
-        product = Product.objects.get(id=item.product_id)
-        product.quantity = item.quantity
-        total = product.price*item.quantity + total
-        items.append(product)
-    context = {'cart':items,'user':request.user,'total':total}
+    if request.method == 'POST':
+        total = 0
+        quantity = int(request.POST.get('quantity'))
+        product_id = request.POST.get('id')
+        product = Product.objects.get(id=product_id)
+        if product.quantity>=quantity:
+            product.quantity = quantity
+            price = product.price
+            total = price * quantity
+            
+            context = {'products':product,'user':request.user,'total':total}
+            return render(request,'checkout.html',context)
+        else:
+            messages.error(request,"Not enough quantity")
+            return redirect(reverse('product_detail', args=[product_id]))
+    else:
+        items = []
+        total = 0
+        cart = Cart.objects.filter(user_id=request.user.id)
+        for item in cart:
+            product = Product.objects.get(id=item.product_id)
+            product.quantity = item.quantity
+            total = product.price*item.quantity + total
+            items.append(product)
+        context = {'cart':items,'user':request.user,'total':total}
 
-    return render(request,'checkout.html',context)
+        return render(request,'checkout.html',context)
 
 def placeorder(request):
     if request.method == 'POST':
@@ -210,3 +227,20 @@ def placeorder(request):
         
         messages.success(request,"Order Placed Successfully")
         return redirect('home')
+    
+
+def makeoffer(request):
+    if request.method == "POST":
+        offer_price = float(request.POST.get('price'))
+        message = request.POST.get('message')
+        quantity = int(request.POST.get('quantity'))
+        product_id = request.POST.get('id')
+        product = Product.objects.get(id=product_id)
+        if product.quantity >= quantity:
+            offer = Offer.objects.create(message=message,price=offer_price,sender_id=request.user.id,product_id_id=product_id)
+            offer.save()
+            messages.success(request,'Your offer has been sent')
+            return redirect(reverse('product_detail', args=[product_id]))
+        else:
+            messages.error(request,'Not enough Quantity')
+            return redirect(reverse('product_detail', args=[product_id]))
