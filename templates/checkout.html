@@ -15,14 +15,14 @@
         
       </h4>
       <ul class="list-group mb-3">
-        {% if item in cart%}
-        {% for item in cart%}
+        {%  if cart %}
+        {% for product in cart%}
         <li class="list-group-item d-flex justify-content-between lh-condensed">
           <div>
-            <h6 class="my-0">{{item.name}}</h6>
-            <small class="text-muted">Quantity:{{item.quantity}}</small>
+            <h6 class="my-0">{{product.name}}</h6>
+            <small class="text-muted">Quantity:{{product.quantity}}</small>
           </div>
-          <span class="text-muted">Rs.{{item.price}}</span>
+          <span class="text-muted">Rs.{{product.price}}</span>
         </li>
         {%endfor%}
         {% else %}
@@ -80,11 +80,11 @@
           </div>
         </div>
       </div>
-      <form action="placeorder" method="post">
+      <form action="/khalti/config" method="post">
         {% csrf_token %}
         <div class="mb-3">
           <label for="address">Shipping Address</label>
-          <input type="text" name = "address" class="form-control" id="address" style="width:48%;" placeholder="{{user.address}}" required>
+          <input type="text" name = "address" class="form-control" id="address" style="width:48%;" value="{{user.address}}" required>
           <div class="invalid-feedback">
             Please enter your shipping address.
           </div>
@@ -99,9 +99,14 @@
 
         <h4 class="mb-3">Payment</h4>
 
-        
+        {%  if cart %}
         <hr class="mb-4">
-        <button class="btn btn-primary btn-lg btn-block mb-3" type="submit">Pay to Place Order</button>
+        <button class="btn btn-primary btn-lg btn-block mb-3" type="submit" name="cart" value="True">Pay to Place Order</button>
+        {% else %}
+        <hr class="mb-4">
+        
+        <button class="btn btn-primary btn-lg btn-block mb-3" type="submit" name="order" value="{{ products.id }}|{{ products.quantity }}">Pay to Place Order</button>
+        {% endif %}
       </form>
     </div>
   </div>

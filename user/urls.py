@@ -22,7 +22,10 @@ urlpatterns = [
     path('product_detail/checkout',views.checkout, name = 'checkout'),
     path('product_detail/makeoffer', views.makeoffer, name='makeoffer'),
 
-
+    path('remove/<int:product_id>', views.remove, name='remove'),
+    path('update_quantity', views.update, name='update_quantity'),
+    path('rating', views.rating, name = 'rating'),
+    path('logout_view', views.logout_view, name='logout_view'),
     #index page template urls
     path('info', views.info, name = 'aboutt'),
     path('auctions', views.auctions, name = 'auctionn'),

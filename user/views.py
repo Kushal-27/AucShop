@@ -3,11 +3,11 @@ from django.contrib import messages
 from vendor.models import Product, Auction, Bid
 from django.contrib.auth.models import User, auth
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, logout
 from django.http import HttpResponse
 User = get_user_model()
 from django.db.models.functions import Random
-from vendor.models import Cart, Order, Vendor, Offer
+from vendor.models import Cart, Order, Vendor, Offer, Rating
 from django.http import JsonResponse
 from django.utils import timezone
 from datetime import datetime
@@ -17,6 +17,20 @@ from django.db.models import Max
 # Create your views here.
 def index(request):
     product = Product.objects.order_by(Random())[:6]
+    
+    rat = 0
+    score = 0
+    for items in product:
+        ratings = Rating.objects.filter(product_id = items.id)
+        if ratings:
+            for rating in ratings:
+                rat = rat + rating.stars
+            score = rat/len(ratings)
+            items.description=score
+        else:
+            items.description = 0
+            
+
     return render(request, 'index.html', {'products':product})
 
 def login(request):
@@ -68,6 +82,19 @@ def signup(request):
 @login_required(login_url='/login')
 def home(request):
     product = Product.objects.order_by(Random())[:6]
+    rat = 0
+    score = 0
+    for items in product:
+        ratings = Rating.objects.filter(product_id = items.id)
+        if ratings:
+            for rating in ratings:
+                rat = rat + rating.stars
+            score = rat/len(ratings)
+            items.description=score
+        else:
+            items.description = 0
+
+    
     return render(request, 'home.html', {'products':product})
     
 def homee(request):
@@ -94,7 +121,23 @@ def auction(request):
     return render(request, 'auction.html', {'products':auction})
 
 def account(request):
-    return render(request, 'account.html')
+    if request.method == 'POST':
+        return HttpResponse('test')
+    else:
+        
+        order = Order.objects.filter(customer_id=request.user.id)
+        offer = Offer.objects.filter(sender_id=request.user.id).exclude(status='Declined')
+        for items in order:
+            product = Product.objects.get(id = items.product_id)
+            
+            items.address = product.name
+        
+        for item in offer:
+            product = Product.objects.get(id = item.product_id_id)
+            item.message = product.name
+        user = User.objects.get(id=request.user.id)
+        context = { 'orders':order, 'offers':offer, 'user':user}
+        return render(request, 'account.html',context)
 
 def products(request):
     product = Product.objects.order_by(Random())[:9]
@@ -201,6 +244,7 @@ def checkout(request):
             messages.error(request,"Not enough quantity")
             return redirect(reverse('product_detail', args=[product_id]))
     else:
+        
         items = []
         total = 0
         cart = Cart.objects.filter(user_id=request.user.id)
@@ -210,7 +254,7 @@ def checkout(request):
             total = product.price*item.quantity + total
             items.append(product)
         context = {'cart':items,'user':request.user,'total':total}
-
+        
         return render(request,'checkout.html',context)
 
 def placeorder(request):
@@ -244,3 +288,36 @@ def makeoffer(request):
         else:
             messages.error(request,'Not enough Quantity')
             return redirect(reverse('product_detail', args=[product_id]))
+
+
+def remove(request, product_id):
+    cart = Cart.objects.get(user_id=request.user.id , product_id=product_id)
+    cart.delete()
+    messages.success(request,"Item removed from the cart")
+    return redirect(request.META.get('HTTP_REFERER'))
+
+def update(request):
+    quantity = int(request.POST.get('quantity'))
+    product_id = request.POST.get('id')
+    product = Product.objects.get(id=product_id)
+    if product.quantity >= quantity:
+        cart = Cart.objects.get(user_id=request.user.id , product_id=product_id)
+        cart.quantity = quantity
+        cart.save()
+        messages.success(request,'Quantity updated successfully')
+        return redirect(request.META.get('HTTP_REFERER'))
+    else:
+        messages.error(request,'Not enough product in stock')
+        return redirect(request.META.get('HTTP_REFERER'))
+    
+def logout_view(request):
+    logout(request)
+    return redirect('index') 
+
+def rating(request):
+    rat = request.POST.get('rat')
+    product_id = request.POST.get('product_id')
+    rating = Rating.objects.create(stars=rat,product_id=product_id,user_id=request.user.id)
+    rating.save()
+    messages.success(request,'Ratings given successfully')
+    return redirect(request.META.get('HTTP_REFERER'))

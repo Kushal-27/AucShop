@@ -128,11 +128,53 @@
             <div class="product_info">
               <h5><span>Rs.</span> {{product.price}}</h5>
               <div class="star_container">
-                <i class="fa fa-star" aria-hidden="true"></i>
-                <i class="fa fa-star" aria-hidden="true"></i>
-                <i class="fa fa-star" aria-hidden="true"></i>
-                <i class="fa fa-star" aria-hidden="true"></i>
-                <i class="fa fa-star" aria-hidden="true"></i>
+                {% if product.description != 0 %}
+                  <i>Rating :{{ product.description }} out of 5</i>
+                  {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+      {% endfor %}
+    </div>
+    <!-- <div class="btn_box">
+      <a href="viewmore" class="view_more-link"> View More </a>
+    </div> -->
+  </div>
+</section>
+<section class="product_section layout_padding">
+  <div class="container product_data">
+    <div class="heading_container heading_center ">
+      <h2 class="apple">Recommended for You</h2>
+    </div>
+    <div class="row">
+      {% for product in products%}
+      <div class="col-sm-6 col-lg-4 ">
+        <div class="product_data">
+        {% csrf_token %}
+       <input type="hidden" value="{{ product.id }}" class="prod_id" />  
+        <div class="box">
+          <div class="img-box">
+            <img src="{{product.product_picture.url}}" alt="" />
+
+            <button type="button" data-product={{product.id}} class="add_cart_btn">
+              Add To Cart 
+            </button>
+          </div>
+          <div class="detail-box">
+            <h5>
+              <a href="{% url 'product_detail' product.id %}"
+                >{{product.name}}</a
+              >
+            </h5>
+            <div class="product_info">
+              <h5><span>Rs.</span> {{product.price}}</h5>
+              <div class="star_container">
+                {% if product.description != 0 %}
+                  <i>Rating :{{ product.description }} out of 5</i>
+                  {% endif %}
               </div>
             </div>
           </div>

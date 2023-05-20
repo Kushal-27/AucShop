@@ -14,20 +14,20 @@
                 <form>
                     <div class="form-group">
                         <label for="city">Full Name</label>
-                        <input type="text" class="form-control" id="city" name="city" style="width: 90%;" readonly value="Anytown">
+                        <input type="text" class="form-control" id="city" name="city" style="width: 90%;" readonly value="{{user.first_name}} {{user.last_name}}">
                     </div>
                     <div class="form-group">
                         <label for="state">Email</label>
-                        <input type="email" class="form-control" id="state" name="state" style="width: 90%;" readonly value="CA">
+                        <input type="email" class="form-control" id="state" name="state" style="width: 90%;" readonly value="{{user.email}}">
                     </div>
                     <div class="form-group">
                         <label for="zip">Phone Number</label>
-                        <input type="number" class="form-control" id="zip" name="zip" style="width: 90%;" readonly value="12345">
+                        <input type="number" class="form-control" id="zip" name="zip" style="width: 90%;" readonly value="{{user.phone_number}}">
                     </div>
                     <!-- Address fields -->
                     <div class="form-group">
                         <label for="address">Address</label>
-                        <input type="text" class="form-control" id="address" name="address" style="width: 90%;" value="123 Main St.">
+                        <input type="text" class="form-control" id="address" name="address" style="width: 90%;" value="{{user.address}}">
                     </div>
                     
                     <!-- Submit button -->
@@ -43,55 +43,98 @@
                             <th>Order ID</th>
                             <th>Product Name</th>
                             <th>Order Date</th>
+                            <th>Order Status</th>
+                            
+                            <th>Rating</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {% for order in orders %}
                         <tr>
-                            <td>1</td>
-                            <td>Product A</td>
-                            <td>2023-05-14</td>
+                            
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.address}}</td>
+                            <td>{{ order.created_at}}</td>
+                            <td>{{ order.order_status }}</td>
+                            {% if order.order_status == 'Delivered' %}
                             <td>
-                                <button class="btn btn-danger">Cancel</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Product B</td>
-                            <td>2023-05-13</td>
+                                <form method="post" action="rating">
+                                    {% csrf_token %}
+                                <input type="number" class="form-control" id="ratingInput" min="1" max="5" name="rat" placeholder="Enter rating" required>
+                              </td>
+                              <td>
+                                
+                                <button class="btn btn-primary rating" type="submit" name="product_id" value="{{ order.product_id }}">Rate</button>
+                                
+                              </td>
+                            </form>
                             <td>
+                                {% endif %}
+                                {% if order.order_status == 'Pending' %}
                                 <button class="btn btn-danger">Cancel</button>
+                                {% endif %}
+                               
                             </td>
+                            
                         </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
                 <h2 class="mt-3">Offers Made</h2>
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Order ID</th>
+                            <th>Offer ID</th>
                             <th>Product Name</th>
-                            <th>Order Date</th>
+                            <th>Offer Price</th>
+                            
+                            <th>Offer Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {% for offer in offers %}
                         <tr>
-                            <td>1</td>
-                            <td>Product A</td>
-                            <td>2023-05-14</td>
+                            <td>{{ offer.id }}</td>
+                            <td>{{ offer.message }}</td>
+                            <td>{{ offer.price }}</td>
+                            <td>{{ offer.status }}</td>
                             <td>
+                                {% if offer.status == 'PENDING' or offer.status == 'Canceled' %}
                                 <button class="btn btn-danger">Cancel</button>
+                                {% endif %}
                             </td>
                         </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <h2 class="mt-3">Your Bids</h2>
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td>2</td>
-                            <td>Product B</td>
-                            <td>2023-05-13</td>
+                            <th>Bid ID</th>
+                            <th>Your Highest Bid</th>
+                            <th>Bidding for</th>
+                            
+                            <th>Time of bid</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for offer in offers %}
+                        <tr>
+                            <td>{{ offer.id }}</td>
+                            <td>{{ offer.message }}</td>
+                            <td>{{ offer.price }}</td>
+                            <td>{{ offer.status }}</td>
                             <td>
+                                {% if offer.status == 'PENDING' or offer.status == 'Canceled' %}
                                 <button class="btn btn-danger">Cancel</button>
+                                {% endif %}
                             </td>
                         </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>

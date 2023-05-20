@@ -61,20 +61,26 @@
                 Rs.{{product.price}}
               </td>
               <td class="align-middle p-4">
+                <form method="post" action="update_quantity">
+                  {% csrf_token %}
                 <input
-                  type="text"
+                  type="number"
                   class="form-control text-center"
                   value="{{product.quantity}}"
+                  name="quantity"
                 />
+                <button type="submit" class="btn-primary mt-2" name="id" value="{{ product.id }}">Update Quantity</button>
+              </form>
               </td>
               <td class="text-right font-weight-semibold align-middle p-4">
                 Rs.{{product.total}}
               </td>
               <td class="text-center align-middle px-0">
                 <a
-                  href="#"
+                  href="{% url 'remove' product.id %}"
                   class="shop-tooltip close float-none text-danger"
                   title=""
+                  
                   data-original-title="Remove"
                   >×</a
                 >
