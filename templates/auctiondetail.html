@@ -6,30 +6,40 @@
       <div class="col-md-6">
         <img src="{{ auction.product_picture.url }}" alt="Product Image" class="img-fluid">
       </div>
-      <div class="col-md-6">
-        <h1 class="fw-bold">{{ auction.item }}</h1>
-        <p class="lead">{{ auction.description }}</p>
-        <h3 class="mt-3 mb-4">Starting Bid: Rs.{{ auction.starting_bid }}</h3>
+    <div class="col-md-6">
+      <h1 class="fw-bold">{{ auction.item }}</h1>
+      <p class="lead">{{ auction.description }}</p>
+      <h3 class="mt-3 mb-4">Starting Bid: Rs.{{ auction.starting_bid }}</h3>
+      
+      {% if auction.current_bid %}
         {% if auction.current_bid > auction.starting_bid %}
-        <h3 class="mt-3 mb-4">Current Bid: Rs.{{ auction.current_bid }}</h3>
-        <h3 class="mt-3 mb-4">Placed on: {{ lastbid }}</h3>
+          <h3 class="mt-3 mb-4">Current Bid: Rs.{{ auction.current_bid }}</h3>
+          <h3 class="mt-3 mb-4">Placed on: {{ lastbid }}</h3>
         {% endif %}
-        {% if auction.status == 'open' %}
+      {% endif %}
+      
+      {% if auction.status == 'open' %}
+        {% if endtime > current_time %}
+          <form method="POST" action="{% url 'place_bid' auction.id %}">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="bid_amount" class="form-label">Enter Bid Amount:</label>
+              <input type="number" name="bid_amount" class="form-control" step="{{ auction.bid_increment }}" min="{{ auction.current_bid|default:auction.starting_bid }}" value="{{ auction.current_bid|default:auction.starting_bid }}" required>
+            </div>
+            <button type="submit" class="btn btn-primary mb-3">Place Bid</button>
+            <span><h4>End Time: {{ endtime }}</h4></span>
+          </form>
+          
+      {% else %}
+      <p class="text-danger"><b>Auction Closed</b></p>
+    {% endif %}
         
-        <form method="POST" action="{% url 'place_bid' auction.id %}">
-          {% csrf_token %}
-          <div class="mb-3">
-            <label for="bid_amount" class="form-label">Enter Bid Amount:</label>
-            <input type="number" name="bid_amount" class="form-control" step="{{ auction.bid_increment }}" min="{{ auction.current_bid|default:auction.starting_bid }}" value="{{ auction.current_bid|default:auction.starting_bid }}" required>
-          </div>
-          <button type="submit" class="btn btn-primary mb-3">Place Bid</button>
-          <span><h4>End Time: {{auction.end_time}}</h4></span>
-        </form>
-        {% else %}
+      {% else %}
         <p class="text-danger"><b>Auction Closed</b></p>
-        
-        {% endif %}
-      </div>
+      {% endif %}
+    </div>
+      
+      
     </div>
     
   </div>

@@ -18,7 +18,7 @@
       <h3 class="mt-3 mb-4">Rs.{{detail.price}}</h3>
 
       <form method="post" action="checkout">
-        {% csrf_token %} {% if detail.category == "Shoes" %}
+        {% csrf_token %} <!-- {% if detail.category == "Shoes" %}
         <div class="mb-3">
           <label for="size" class="form-label">Size:</label>
           <select class="form-select" id="size" name="size">
@@ -27,8 +27,8 @@
             <option value="m">40</option>
             <option value="l">41</option>
           </select>
-        </div>
-        {% endif %} {% if detail.category == "clothes" %}
+        </div> -->
+        <!-- {% endif %} {% if detail.category == "clothes" %}
         <div class="mb-3">
           <label for="size" class="form-label">Size:</label>
           <select class="form-select" id="size" name="size">
@@ -38,7 +38,7 @@
             <option value="l">Large</option>
           </select>
         </div>
-        {% endif %}
+        {% endif %} -->
         <div class="mb-3">
           <label for="quantity" class="form-label">Quantity:</label>
           <input
@@ -79,7 +79,7 @@
               required
             />
           </div>
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <label for="offer-quantity" class="form-label">Quantity:</label>
             <input
               name="quantity"
@@ -88,7 +88,7 @@
               id="offer-quantity"
               placeholder="1"
               value="1"
-            />
+            /> -->
           </div>
           <div class="mb-3">
             <label for="offer-message" class="form-label">Message:</label>

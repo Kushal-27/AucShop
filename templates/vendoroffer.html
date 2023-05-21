@@ -1,0 +1,47 @@
+{% extends 'vendorbase.html' %} {% load static %} {% block active %} active
+{%endblock%} {% block body %}
+<div class="container mt-4">
+    <h4>Offers for Your Products</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Offer Price</th>
+                <th>Offered By</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            {% for off in offers %}
+            <tr>
+                <td>{{ off.message }}</td>
+                <td>Rs.{{ off.price }}</td>
+                <td>{{ off.sender_id}}</td>
+                <td>{{ off.status}}</td>
+                
+                <td>
+                    {% if off.status == "PENDING" %}
+                    <form method="post" action="{% url 'vendor:acceptoffer' %}">
+                        {% csrf_token %}
+                    <button class="btn btn-success" name="id" value="{{ off.id }}">Accept</button>
+                    </form>
+                    {% endif %}
+                    {% if off.status == "PENDING" %}
+                    <form method="post" action="{% url 'vendor:acceptoffer' %}">
+                        {% csrf_token %}
+                    <button class="btn btn-danger" name="id" value="{{ off.id }}">Decline</button>
+                    </form>
+                    {% endif %}
+                    
+                </td>
+                
+            </tr>
+            {% endfor %}
+            
+    </table>
+</div>
+
+
+{%endblock%}

@@ -1,7 +1,48 @@
 {% extends 'vendorbase.html' %} {% load static %} {% block active %} active
 {%endblock%} {% block body %}
-
-<div class="content">
+<div class="container mt-4">
+  <div class="row">
+      <div class="col-md-6">
+          <div class="card h-100">
+              <div class="card-body">
+                  <h4 class="card-title">Total Sales</h4>
+                  
+                  <p class="card-text">Rs.{{ sales }}</p>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-6">
+          <div class="card h-100">
+              <div class="card-body">
+                  <h4 class="card-title">Total Offers</h4>
+                  
+                  <p class="card-text">{{ offers }}</p>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="row mt-4">
+      <div class="col-md-6">
+          <div class="card h-100">
+              <div class="card-body">
+                  <h4 class="card-title">Total Products</h4>
+                  
+                  <p class="card-text">{{ products }}</p>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-6">
+          <div class="card h-100">
+              <div class="card-body">
+                  <h4 class="card-title">Total Orders</h4>
+                  
+                  <p class="card-text">{{ orders }}</p>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+<!-- <div class="content">
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-4">
@@ -306,5 +347,5 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 {%endblock%}

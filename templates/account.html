@@ -11,7 +11,8 @@
             <div class="col-md-4">
                 <!-- User information section -->
                 <h2 class="mt-3">My Information</h2>
-                <form>
+                <form action="update_address" method="post">
+                    {% csrf_token %}
                     <div class="form-group">
                         <label for="city">Full Name</label>
                         <input type="text" class="form-control" id="city" name="city" style="width: 90%;" readonly value="{{user.first_name}} {{user.last_name}}">
@@ -36,6 +37,7 @@
             </div>
             <div class="col-md-8">
                 <!-- Orders section -->
+                {% if orders%}
                 <h2 class="mt-3">Orders</h2>
                 <table class="table">
                     <thead>
@@ -72,15 +74,19 @@
                             <td>
                                 {% endif %}
                                 {% if order.order_status == 'Pending' %}
-                                <button class="btn btn-danger">Cancel</button>
+                                <form action="cancelorder" method="post">
+                                    {% csrf_token %}
+                                <button class="btn btn-danger" name="id" value="{{ order.id }}">Cancel</button>
                                 {% endif %}
-                               
+                               </form>
                             </td>
                             
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
+                {% endif %}
+                {% if offers %}
                 <h2 class="mt-3">Offers Made</h2>
                 <table class="table">
                     <thead>
@@ -102,41 +108,50 @@
                             <td>{{ offer.status }}</td>
                             <td>
                                 {% if offer.status == 'PENDING' or offer.status == 'Canceled' %}
-                                <button class="btn btn-danger">Cancel</button>
+                                <form method="post" action="canceloffer">
+                                    {% csrf_token %}
+                                <button class="btn btn-danger" name="id" value="{{ offer.id }}">Cancel</button>
+                                </form>
+                                {% endif %}
+                                {% if offer.status == 'ACCEPTED' %}
+                                <form method="post" action="canceloffer">
+                                    {% csrf_token %}
+                                <button class="btn btn-danger" name="id" value="{{ offer.id }}">Cancel</button>
+                                </form>
                                 {% endif %}
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
+
                 </table>
+                {% endif %}
+                {% if bids %}
                 <h2 class="mt-3">Your Bids</h2>
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Bid ID</th>
-                            <th>Your Highest Bid</th>
+                            <th>Auction ID</th>
+                            <th>Highest Bid</th>
                             <th>Bidding for</th>
                             
-                            <th>Time of bid</th>
+                            
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for offer in offers %}
+                        {% for bid in bids %}
                         <tr>
-                            <td>{{ offer.id }}</td>
-                            <td>{{ offer.message }}</td>
-                            <td>{{ offer.price }}</td>
-                            <td>{{ offer.status }}</td>
-                            <td>
-                                {% if offer.status == 'PENDING' or offer.status == 'Canceled' %}
-                                <button class="btn btn-danger">Cancel</button>
-                                {% endif %}
-                            </td>
+                            <td>{{ bid.id }}</td>
+                            <td>{{ bid.current_bid }}</td>
+                            <td>{{ bid.item }}</td>
+                            <td>Won</td>
+                            
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
+                {% endif %}
             </div>
         </div>
     </div>

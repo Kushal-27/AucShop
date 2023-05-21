@@ -1,0 +1,35 @@
+{% extends 'vendorbase.html' %} {% load static %} {% block active %} active
+{%endblock%} {% block body %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto"> <!-- Adjust the column size as per your preference -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Profile</h5>
+                    <div class="mb-3">
+                        <label for="vendorName" class="form-label">Vendor Name</label>
+                        <input type="text" class="form-control" id="vendorName" value="{{ user.first_name }}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="vendorName" class="form-label">Shop Name</label>
+                        <input type="text" class="form-control" id="vendorName" value="{{ vendor.shopname }}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="vendorEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="vendorEmail" value="{{ user.email }}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="vendorName" class="form-label">Pan Number</label>
+                        <input type="number" class="form-control" id="vendorName" value="{{ vendor.pan_number }}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="vendorPhone" class="form-label">Phone</label>
+                        <input type="tel" class="form-control" id="vendorPhone" value="{{ user.phone_number }}" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{%endblock%}

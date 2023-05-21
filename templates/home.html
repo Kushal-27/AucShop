@@ -106,7 +106,7 @@
       <h2 class="apple">Our Products</h2>
     </div>
     <div class="row">
-      {% for product in products%}
+      {% for product in products %}
       <div class="col-sm-6 col-lg-4 ">
         <div class="product_data">
         {% csrf_token %}
@@ -144,37 +144,38 @@
     </div> -->
   </div>
 </section>
+{% if recommendation.1  %}
 <section class="product_section layout_padding">
   <div class="container product_data">
     <div class="heading_container heading_center ">
       <h2 class="apple">Recommended for You</h2>
     </div>
     <div class="row">
-      {% for product in products%}
+      {% for item in recommendation%}
       <div class="col-sm-6 col-lg-4 ">
         <div class="product_data">
         {% csrf_token %}
-       <input type="hidden" value="{{ product.id }}" class="prod_id" />  
+       <input type="hidden" value="{{ item.id }}" class="prod_id" />  
         <div class="box">
           <div class="img-box">
-            <img src="{{product.product_picture.url}}" alt="" />
+            <img src="{{item.product_picture.url}}" alt="" />
 
-            <button type="button" data-product={{product.id}} class="add_cart_btn">
+            <button type="button" data-product={{item.id}} class="add_cart_btn">
               Add To Cart 
             </button>
           </div>
           <div class="detail-box">
             <h5>
-              <a href="{% url 'product_detail' product.id %}"
-                >{{product.name}}</a
+              <a href="{% url 'product_detail' item.id %}"
+                >{{item.name}}</a
               >
             </h5>
             <div class="product_info">
-              <h5><span>Rs.</span> {{product.price}}</h5>
+              <h5><span>Rs.</span> {{item.price}}</h5>
               <div class="star_container">
-                {% if product.description != 0 %}
-                  <i>Rating :{{ product.description }} out of 5</i>
-                  {% endif %}
+                <!-- {% if item.description != 0 %}
+                  <i>Rating :{{ item.description }} out of 5</i>
+                  {% endif %} -->
               </div>
             </div>
           </div>
@@ -188,6 +189,6 @@
     </div> -->
   </div>
 </section>
-
+{% endif %}
 
 {% endblock%}

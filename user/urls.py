@@ -26,6 +26,11 @@ urlpatterns = [
     path('update_quantity', views.update, name='update_quantity'),
     path('rating', views.rating, name = 'rating'),
     path('logout_view', views.logout_view, name='logout_view'),
+
+    path('update_address',views.updateadd, name='update_address'),
+    path('cancelorder',views.cancelorder, name='cancelorder'),
+    path('canceloffer',views.canceloffer, name='canceloffer'),
+    
     #index page template urls
     path('info', views.info, name = 'aboutt'),
     path('auctions', views.auctions, name = 'auctionn'),

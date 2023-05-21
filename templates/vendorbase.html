@@ -28,6 +28,7 @@
       href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css"
     />
     <!-- CSS Files -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
     <link href="{% static 'vendorAssets/css/bootstrap.min.css' %}" rel="stylesheet" />
     <link
       href="{% static 'vendorAssets/css/light-bootstrap-dashboard.css' %}"
@@ -48,45 +49,33 @@
           </div>
           <ul class="nav">
             <li>
-              <a class="nav-link {% block active %}{% endblock %}" href="dashboard.html">
+              <a class="nav-link {% block active %}{% endblock %}" href="{% url 'vendor:vendorhome' %}">
                 <i class="nc-icon nc-chart-pie-35"></i>
                 <p>Dashboard</p>
               </a>
             </li>
             <li class="nav-item {% block active1 %}{% endblock %}">
-              <a class="nav-link" href="./user.html">
+              <a class="nav-link" href="{% url 'vendor:vendor_profile' %}">
                 <i class="nc-icon nc-circle-09"></i>
-                <p>User Profile</p>
+                <p>My Profile</p>
               </a>
             </li>
             <li>
-              <a class="nav-link {% block active2 %}{% endblock %}" href="./table.html">
+              <a class="nav-link " href="{% url 'vendor:offer' %}">
                 <i class="nc-icon nc-notes"></i>
-                <p>Table List</p>
+                <p>Manage Offers</p>
               </a>
             </li>
             <li>
-              <a class="nav-link {% block active3 %}{% endblock %}" href="./typography.html">
-                <i class="nc-icon nc-paper-2"></i>
-                <p>Typography</p>
+              <a class="nav-link " href="{% url 'vendor:listproduct' %}">
+                <i class="nc-icon nc-notes"></i>
+                <p>List Products</p>
               </a>
             </li>
             <li>
-              <a class="nav-link {% block active4 %}{% endblock %}" href="./icons.html">
-                <i class="nc-icon nc-atom"></i>
-                <p>Icons</p>
-              </a>
-            </li>
-            <li>
-              <a class="nav-link {% block active5 %}{% endblock %}" href="">
-                <i class="nc-icon nc-pin-3"></i>
-                <p>Maps</p>
-              </a>
-            </li>
-            <li>
-              <a class="nav-link" href="./notifications.html">
-                <i class="nc-icon nc-bell-55"></i>
-                <p>Notifications</p>
+              <a class="nav-link {% block active2 %}{% endblock %}" href="{% url 'vendor:createauction' %}">
+                <i class="nc-icon nc-notes"></i>
+                <p>Create Auction</p>
               </a>
             </li>
             
@@ -106,7 +95,7 @@
               <ul class="nav navbar-nav mr-auto"></ul>
               <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                  <a class="nav-link" href="#pablo">
+                  <a class="nav-link" href="{% url 'vendor:logoutt' %}">
                     <span class="no-icon">Log out</span>
                   </a>
                 </li>
@@ -115,7 +104,18 @@
           </div>
         </nav>
      {% block body %}{% endblock %}
-    
+     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+     <script>
+       {% for flashmsg in messages %}
+           {% if flashmsg.tags == 'success' %}
+               alertify.set('notifier', 'position', 'bottom-right');
+               alertify.success('{{ flashmsg }}');
+           {% elif flashmsg.tags == 'error' %}
+               alertify.set('notifier', 'position', 'bottom-right');
+               alertify.error('{{ flashmsg }}');
+           {% endif %}
+       {% endfor %}
+     </script>
   </body>
   <!--   Core JS Files   -->
   <script

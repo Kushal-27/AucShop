@@ -1,0 +1,51 @@
+{% extends 'vendorbase.html' %} {% load static %} {% block active %} active
+{%endblock%} {% block body %}
+<div class="container mt-4">
+    <h4>Create Auction</h4>
+    <form method="post" action="{% url 'vendor:createauction' %}">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="item">Item</label>
+        <input type="text" class="form-control" id="item" name="item" required>
+      </div>
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea class="form-control" id="description" name="description" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="picture">Picture</label>
+        <input type="file" class="form-control-file" id="picture" name="picture" required>
+      </div>
+      <div class="form-group">
+        <label for="starting_bid">Starting Bid</label>
+        <input type="number" class="form-control" id="starting_bid" name="starting_bid" step="0.01" required>
+      </div>
+      <div class="form-group">
+        <label for="reserve_price">Reserve Price</label>
+        <input type="number" class="form-control" id="reserve_price" name="reserve_price" step="0.01" required>
+      </div>
+      <div class="form-group">
+        <label for="bid_increment">Bid Increment</label>
+        <input type="number" class="form-control" id="bid_increment" name="bid_increment" step="0.01" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="start_time">Start Time</label>
+        <input type="datetime-local" class="form-control" id="start_time" name="start_time" required>
+      </div>
+      <div class="form-group">
+        <label for="end_time">End Time</label>
+        <input type="datetime-local" class="form-control" id="end_time" name="end_time" required>
+      </div>
+      <div class="form-group">
+        <label for="status">Status</label>
+        <select class="form-control" id="status" name="status" required>
+          <option value="active">open</option>
+          <option value="inactive">closed</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Create Auction</button>
+    </form>
+  </div>
+
+{%endblock%}

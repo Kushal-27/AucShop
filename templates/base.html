@@ -70,7 +70,7 @@
                   LOGOUT
                 </span>
               </a>
-              <a href="cart" class="cart-link">
+              <a href="{% url 'cart' %}" class="cart-link">
                 <i class="fa fa-shopping-cart {% block cartactive %} {% endblock %}" aria-hidden="true"></i>
                 <span class>
                   Cart
@@ -84,7 +84,7 @@
       <div class="header_bottom">
         <div class="container-fluid">
           <nav class="navbar navbar-expand-lg custom_nav-container ">
-            <a class="navbar-brand" href="index">
+            <a class="navbar-brand" href="{% url 'home' %}">
               <span>
                 AucShop
               </span>
@@ -97,19 +97,19 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav ">
                 <li class="nav-item {% block active %} {% endblock %}">
-                  <a class="nav-link" href="home">Home </a>
+                  <a class="nav-link" href="{% url 'home' %}">Home </a>
                 </li>
                 <li class="nav-item {% block aboutactive %} {% endblock %}">
-                  <a class="nav-link " href="about"> About</a>
+                  <a class="nav-link " href="{% url 'about' %}"> About</a>
                 </li>
                 <li class="nav-item {% block productactive %} {% endblock %}">
-                  <a class="nav-link" href="products">Products</a>
+                  <a class="nav-link" href="{% url 'products' %}">Products</a>
                 </li>
                 <li class="nav-item {% block auctionactive %} {% endblock %}">
-                  <a class="nav-link" href="auction">Auctions</a>
+                  <a class="nav-link" href="{% url 'auction' %}">Auctions</a>
                 </li>
                 <li class="nav-item {% block accountactive %} {% endblock %}">
-                  <a class="nav-link" href="account">My Profile</a>
+                  <a class="nav-link" href="{% url 'account' %}">My Profile</a>
                 </li>
               </ul>
             </div>

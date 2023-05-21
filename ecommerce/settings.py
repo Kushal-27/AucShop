@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'user',
     'vendor',
     'khalti',
-    
+    'jet',
 ]
 
 MIDDLEWARE = [
